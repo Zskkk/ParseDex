@@ -1,6 +1,8 @@
+import elfparse.ElfParser;
 import parse.DexParser;
 import utils.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,8 +13,7 @@ import java.io.FileNotFoundException;
  */
 
 public class main {
-    public static void main(String[] args) {
-        System.out.println("Current working directory: " + System.getProperty("user.dir"));
+    public static void parseDex(){
         File file = new File("src/main/resources/Hello.dex");
         try {
             DexParser dexParser = new DexParser(new FileInputStream(file), Utils.readAll(file));
@@ -20,5 +21,17 @@ public class main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void parseElf(){
+        File file = new File("src/main/resources/libhello-jni.so");
+        ElfParser elfParser = new ElfParser(Utils.readAll(file));
+        elfParser.parse();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Current working directory: " + System.getProperty("user.dir"));
+        parseDex();
+        parseElf();
     }
 }

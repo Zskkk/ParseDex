@@ -44,6 +44,23 @@ public class Utils {
         return r.toString();
     }
 
+    /**
+     * 反序输出hex值，方面elf解析查看
+    */
+    public static String byteToHexReverse(byte[] bytes){
+        StringBuilder r = new StringBuilder(bytes.length * 3);
+
+        for (int i = bytes.length - 1; i >= 0; i--) {
+            byte b = bytes[i];
+            r.append(hexCode[(b >> 4) & 0xF]);
+            r.append(hexCode[b & 0xF]);
+            if (i > 0) {
+                r.append(" ");
+            }
+        }
+        return r.toString();
+    }
+
     public static int byte2Short(byte[] bytes) {
         return fromBytes(bytes[0], bytes[1]);
     }
@@ -53,12 +70,11 @@ public class Utils {
     }
 
     public static byte[] readAll(File file) {
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            FileInputStream in = new FileInputStream(file);
-            BufferedInputStream bi = new BufferedInputStream(in);
+        try (FileInputStream in = new FileInputStream(file);
+             BufferedInputStream bi = new BufferedInputStream(in);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             byte[] b = new byte[1024];
-            int len = 0;
+            int len;
             while ((len = bi.read(b)) != -1) {
                 bos.write(b, 0, len);
             }
